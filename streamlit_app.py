@@ -1,11 +1,8 @@
-
 import streamlit as st
 import pandas as pd
 import numpy as np
+import time
 
-# ---------------------------------------------------------
-# PAGE CONFIG
-# ---------------------------------------------------------
 st.set_page_config(
     page_title="Fanar Aqua Guard",
     page_icon="🪼",
@@ -13,151 +10,187 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ---------------------------------------------------------
-# CUSTOM CSS
-# ---------------------------------------------------------
+# ============================================================
+# STYLE
+# ============================================================
+
 st.markdown("""
 <style>
+    .stApp {
+        background: #07141d;
+        color: #e8f5f7;
+    }
 
-.main {
-    background-color: #071923;
-}
+    [data-testid="stSidebar"] {
+        background: #061019;
+        border-right: 1px solid #18313d;
+    }
 
-.block-container {
-    padding-top: 1.5rem;
-    padding-bottom: 2rem;
-    max-width: 1400px;
-}
+    .main-title {
+        font-size: 38px;
+        font-weight: 800;
+        margin-bottom: 0;
+    }
 
-h1, h2, h3 {
-    color: #EAF7FA;
-}
+    .subtitle {
+        color: #8fb8c3;
+        font-size: 16px;
+        margin-top: 3px;
+    }
 
-.subtitle {
-    color: #9CCBD3;
-    font-size: 1.05rem;
-    margin-top: -12px;
-    margin-bottom: 25px;
-}
+    .demo-banner {
+        background: #102b35;
+        border: 1px solid #245564;
+        border-radius: 10px;
+        padding: 12px 16px;
+        margin: 18px 0;
+        color: #bfe8ef;
+    }
 
-.card {
-    background: linear-gradient(145deg, #102B35, #0B2029);
-    padding: 22px;
-    border-radius: 16px;
-    border: 1px solid #214752;
-    min-height: 135px;
-}
+    .card {
+        background: #0c202b;
+        border: 1px solid #193b48;
+        border-radius: 12px;
+        padding: 18px;
+        min-height: 120px;
+    }
 
-.card-title {
-    color: #8FBCC4;
-    font-size: 0.85rem;
-    font-weight: 600;
-    text-transform: uppercase;
-    letter-spacing: 0.8px;
-}
+    .card-title {
+        color: #82aeb9;
+        font-size: 14px;
+        margin-bottom: 7px;
+    }
 
-.card-value {
-    color: #F2FBFC;
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin-top: 10px;
-}
+    .card-value {
+        font-size: 27px;
+        font-weight: 750;
+    }
 
-.card-small {
-    color: #9CCBD3;
-    font-size: 0.82rem;
-    margin-top: 5px;
-}
+    .card-small {
+        color: #8fb8c3;
+        font-size: 13px;
+        margin-top: 5px;
+    }
 
-.section {
-    background: #0C222B;
-    padding: 22px;
-    border-radius: 16px;
-    border: 1px solid #1E424D;
-    margin-top: 20px;
-}
+    .status-good {
+        color: #67e8a5;
+    }
 
-.status-good {
-    background: #123A36;
-    color: #8FE0C7;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-weight: 600;
-}
+    .status-warning {
+        color: #ffd166;
+    }
 
-.status-warning {
-    background: #493A16;
-    color: #F6D77A;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-weight: 600;
-}
+    .status-danger {
+        color: #ff7b7b;
+    }
 
-.status-danger {
-    background: #491F24;
-    color: #FF9FA7;
-    padding: 12px 18px;
-    border-radius: 10px;
-    font-weight: 600;
-}
+    .section-title {
+        font-size: 22px;
+        font-weight: 750;
+        margin-top: 25px;
+        margin-bottom: 12px;
+    }
 
-.workflow {
-    background: #102B35;
-    border: 1px solid #28505A;
-    padding: 18px;
-    border-radius: 12px;
-    text-align: center;
-    color: #DDF4F6;
-    font-weight: 600;
-}
+    .workflow {
+        background: #0b1e28;
+        border: 1px solid #1b3d49;
+        border-radius: 12px;
+        padding: 18px;
+        text-align: center;
+        height: 130px;
+    }
 
-.arrow {
-    text-align: center;
-    font-size: 1.5rem;
-    color: #64C6D2;
-    padding-top: 15px;
-}
+    .workflow-icon {
+        font-size: 30px;
+    }
 
-.demo {
-    background: #172A30;
-    border-left: 4px solid #64C6D2;
-    padding: 12px 16px;
-    border-radius: 6px;
-    color: #B8D4D8;
-    font-size: 0.85rem;
-}
+    .workflow-name {
+        font-weight: 700;
+        margin-top: 5px;
+    }
 
-.footer {
-    text-align: center;
-    color: #7899A0;
-    font-size: 0.8rem;
-    padding: 35px 0 10px 0;
-}
+    .workflow-desc {
+        color: #86aab4;
+        font-size: 12px;
+    }
 
+    .arrow {
+        text-align: center;
+        font-size: 28px;
+        padding-top: 40px;
+        color: #4e8b9a;
+    }
+
+    .intake-box {
+        background: #0a2530;
+        border: 2px solid #2c6878;
+        border-radius: 15px;
+        padding: 24px;
+        text-align: center;
+    }
+
+    .swarm-box {
+        background: #251b27;
+        border: 2px solid #704c69;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .response-box {
+        background: #10291f;
+        border: 2px solid #327052;
+        border-radius: 15px;
+        padding: 20px;
+        text-align: center;
+    }
+
+    .big-icon {
+        font-size: 45px;
+    }
+
+    .metric-label {
+        color: #8fb8c3;
+        font-size: 13px;
+    }
+
+    .metric-value {
+        font-size: 25px;
+        font-weight: 750;
+    }
+
+    .footer {
+        text-align: center;
+        color: #607e87;
+        font-size: 12px;
+        padding: 35px 0 15px 0;
+    }
 </style>
 """, unsafe_allow_html=True)
 
-# ---------------------------------------------------------
-# DEMO DATA
-# ---------------------------------------------------------
 
-time_points = [
+# ============================================================
+# SIMULATED DATA
+# ============================================================
+
+times = [
     "08:00", "09:00", "10:00", "11:00",
     "12:00", "13:00", "14:00", "15:00"
 ]
 
-jellyfish_activity = [12, 15, 18, 27, 34, 41, 38, 32]
-intake_risk = [5, 7, 9, 14, 22, 31, 28, 23]
+jellyfish_activity = [12, 17, 22, 31, 43, 52, 47, 38]
+intake_risk = [8, 12, 18, 27, 39, 55, 48, 34]
 
-activity_df = pd.DataFrame({
-    "Time": time_points,
+monitoring_df = pd.DataFrame({
+    "Time": times,
     "Jellyfish Activity": jellyfish_activity,
     "Intake Risk": intake_risk
 })
 
-# ---------------------------------------------------------
+
+# ============================================================
 # SIDEBAR
-# ---------------------------------------------------------
+# ============================================================
 
 st.sidebar.markdown("## 🪼 Fanar Aqua Guard")
 st.sidebar.caption("AI-Assisted Jellyfish Swarm Management")
@@ -177,407 +210,587 @@ page = st.sidebar.radio(
 
 st.sidebar.markdown("---")
 
-st.sidebar.markdown(
-    """
-    **System Mode**
+st.sidebar.markdown("### System Mode")
+st.sidebar.success("🟢 Prototype Monitoring")
 
-    🟢 Prototype Monitoring
-    """
+st.sidebar.markdown("### Prototype")
+st.sidebar.caption(
+    "Demo data is simulated and is used only "
+    "to demonstrate the dashboard workflow."
 )
 
-st.sidebar.markdown(
-    """
-    **Prototype**
 
-    Demo data is simulated and is used only to demonstrate the dashboard workflow.
-    """
-)
-
-# ---------------------------------------------------------
+# ============================================================
 # HEADER
-# ---------------------------------------------------------
+# ============================================================
 
-st.title("🪼 Fanar Aqua Guard")
 st.markdown(
-    '<div class="subtitle">AI-Assisted Jellyfish Swarm Management & Intake Protection</div>',
+    '<div class="main-title">🪼 Fanar Aqua Guard</div>',
     unsafe_allow_html=True
 )
 
-# =========================================================
+st.markdown(
+    '<div class="subtitle">Autonomous Jellyfish Swarm Management & Seawater Intake Protection</div>',
+    unsafe_allow_html=True
+)
+
+st.markdown(
+    """
+    <div class="demo-banner">
+    ⚠️ <b>DEMONSTRATION MODE</b> — All readings shown in this prototype are simulated.
+    The interface demonstrates the proposed sensing, decision and response workflow.
+    </div>
+    """,
+    unsafe_allow_html=True
+)
+
+
+# ============================================================
 # DASHBOARD
-# =========================================================
+# ============================================================
 
 if page == "Dashboard":
 
-    st.markdown(
-        '<div class="demo">⚠️ DEMONSTRATION MODE — All readings shown in this prototype are simulated.</div>',
-        unsafe_allow_html=True
-    )
+    st.markdown('<div class="section-title">System Overview</div>',
+                unsafe_allow_html=True)
 
-    st.markdown("## System Overview")
+    c1, c2, c3, c4 = st.columns(4)
 
-    col1, col2, col3, col4 = st.columns(4)
-
-    with col1:
+    with c1:
         st.markdown("""
         <div class="card">
-            <div class="card-title">Swarm Status</div>
+            <div class="card-title">SWARM STATUS</div>
             <div class="card-value">Detected</div>
             <div class="card-small">Early warning received</div>
         </div>
         """, unsafe_allow_html=True)
 
-    with col2:
+    with c2:
         st.markdown("""
         <div class="card">
-            <div class="card-title">Intake Risk</div>
-            <div class="card-value">Moderate</div>
-            <div class="card-small">Requires monitoring</div>
+            <div class="card-title">INTAKE RISK</div>
+            <div class="card-value status-warning">Moderate</div>
+            <div class="card-small">Requires active monitoring</div>
         </div>
         """, unsafe_allow_html=True)
 
-    with col3:
+    with c3:
         st.markdown("""
         <div class="card">
-            <div class="card-title">Response Mode</div>
+            <div class="card-title">CURRENT RESPONSE</div>
             <div class="card-value">Redirect</div>
-            <div class="card-small">Automated response</div>
+            <div class="card-small">Adaptive response active</div>
         </div>
         """, unsafe_allow_html=True)
 
-    with col4:
+    with c4:
         st.markdown("""
         <div class="card">
-            <div class="card-title">System Status</div>
-            <div class="card-value">Active</div>
-            <div class="card-small">Monitoring continuously</div>
+            <div class="card-title">AUTOMATION</div>
+            <div class="card-value status-good">Active</div>
+            <div class="card-small">Minimal manual intervention</div>
         </div>
         """, unsafe_allow_html=True)
 
-    # -----------------------------------------------------
-    # WORKFLOW
-    # -----------------------------------------------------
 
-    st.markdown("## Response Workflow")
+    # --------------------------------------------------------
+    # MAIN VISUAL
+    # --------------------------------------------------------
 
-    w1, a1, w2, a2, w3, a3, w4 = st.columns([2, .5, 2, .5, 2, .5, 2])
+    st.markdown(
+        '<div class="section-title">Live Swarm-to-Intake Situation</div>',
+        unsafe_allow_html=True
+    )
 
-    with w1:
+    left, mid, right = st.columns([1, 0.25, 1])
+
+    with left:
+        st.markdown("""
+        <div class="swarm-box">
+            <div class="big-icon">🪼 🪼 🪼</div>
+            <h3>Incoming Swarm</h3>
+            <p>Elevated activity detected</p>
+            <hr>
+            <div class="metric-label">Movement direction</div>
+            <div class="metric-value">→ Intake zone</div>
+            <br>
+            <div class="metric-label">Swarm intensity</div>
+            <div class="metric-value">High</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with mid:
         st.markdown(
-            '<div class="workflow">🪼<br>Early Warning<br>Received</div>',
+            '<div class="arrow">→</div>',
             unsafe_allow_html=True
         )
+
+    with right:
+        st.markdown("""
+        <div class="intake-box">
+            <div class="big-icon">🌊</div>
+            <h3>Seawater Intake</h3>
+            <p>Protected zone</p>
+            <hr>
+            <div class="metric-label">Current exposure</div>
+            <div class="metric-value">Moderate</div>
+            <br>
+            <div class="metric-label">Protection state</div>
+            <div class="metric-value status-good">Active</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    st.markdown("<br>", unsafe_allow_html=True)
+
+    r1, r2, r3 = st.columns(3)
+
+    with r1:
+        st.markdown("""
+        <div class="response-box">
+            <div class="big-icon">🧠</div>
+            <h3>Analyze</h3>
+            <p>Movement + local conditions assessed</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r2:
+        st.markdown("""
+        <div class="response-box">
+            <div class="big-icon">🔄</div>
+            <h3>Adapt</h3>
+            <p>Response direction adjusted</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with r3:
+        st.markdown("""
+        <div class="response-box">
+            <div class="big-icon">↗️</div>
+            <h3>Redirect</h3>
+            <p>Swarm guided away from intake</p>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+    # --------------------------------------------------------
+    # WORKFLOW
+    # --------------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">Closed-Loop Response Workflow</div>',
+        unsafe_allow_html=True
+    )
+
+    w1, a1, w2, a2, w3, a3, w4 = st.columns(
+        [1, 0.25, 1, 0.25, 1, 0.25, 1]
+    )
+
+    with w1:
+        st.markdown("""
+        <div class="workflow">
+            <div class="workflow-icon">📡</div>
+            <div class="workflow-name">DETECT</div>
+            <div class="workflow-desc">Receive warning + sensor data</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with a1:
         st.markdown('<div class="arrow">→</div>', unsafe_allow_html=True)
 
     with w2:
-        st.markdown(
-            '<div class="workflow">🔎<br>Swarm<br>Assessment</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown("""
+        <div class="workflow">
+            <div class="workflow-icon">🧠</div>
+            <div class="workflow-name">ANALYZE</div>
+            <div class="workflow-desc">Estimate movement + risk</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with a2:
         st.markdown('<div class="arrow">→</div>', unsafe_allow_html=True)
 
     with w3:
-        st.markdown(
-            '<div class="workflow">⚠️<br>Intake Risk<br>Assessment</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown("""
+        <div class="workflow">
+            <div class="workflow-icon">⚙️</div>
+            <div class="workflow-name">ADAPT</div>
+            <div class="workflow-desc">Coordinate response modules</div>
+        </div>
+        """, unsafe_allow_html=True)
 
     with a3:
         st.markdown('<div class="arrow">→</div>', unsafe_allow_html=True)
 
     with w4:
-        st.markdown(
-            '<div class="workflow">🔄<br>Response<br>Activated</div>',
-            unsafe_allow_html=True
-        )
+        st.markdown("""
+        <div class="workflow">
+            <div class="workflow-icon">↗️</div>
+            <div class="workflow-name">VERIFY</div>
+            <div class="workflow-desc">Observe and adjust</div>
+        </div>
+        """, unsafe_allow_html=True)
 
-    # -----------------------------------------------------
-    # CHARTS
-    # -----------------------------------------------------
 
-    st.markdown("## Swarm Activity & Intake Risk")
+    # --------------------------------------------------------
+    # GRAPH
+    # --------------------------------------------------------
 
-    st.line_chart(
-        activity_df.set_index("Time"),
-        height=350
+    st.markdown(
+        '<div class="section-title">Swarm Activity & Intake Risk</div>',
+        unsafe_allow_html=True
     )
 
-    # -----------------------------------------------------
-    # CURRENT EVENT
-    # -----------------------------------------------------
+    chart_df = monitoring_df.set_index("Time")
 
-    st.markdown("## Current Event")
+    st.line_chart(
+        chart_df,
+        height=320
+    )
 
-    left, right = st.columns(2)
 
-    with left:
+    # --------------------------------------------------------
+    # EVENT
+    # --------------------------------------------------------
+
+    st.markdown(
+        '<div class="section-title">Current Event</div>',
+        unsafe_allow_html=True
+    )
+
+    e1, e2, e3 = st.columns(3)
+
+    with e1:
         st.markdown("""
-        <div class="section">
-        <h3>🪼 Jellyfish Swarm</h3>
-        <p><b>Status:</b> Early warning received</p>
-        <p><b>Activity:</b> Elevated</p>
-        <p><b>Trend:</b> Increasing</p>
-        <p><b>Detection confidence:</b> Demo value</p>
+        <div class="card">
+            <div class="card-title">🪼 SWARM</div>
+            <div class="card-value">Elevated</div>
+            <div class="card-small">
+            Direction: Toward protected zone<br>
+            Confidence: Demo value
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-    with right:
+    with e2:
         st.markdown("""
-        <div class="section">
-        <h3>⚠️ Intake Protection</h3>
-        <p><b>Risk:</b> Moderate</p>
-        <p><b>Current response:</b> Redirect</p>
-        <p><b>Manual intervention:</b> Minimal</p>
-        <p><b>System state:</b> Monitoring response</p>
+        <div class="card">
+            <div class="card-title">⚠️ INTAKE EXPOSURE</div>
+            <div class="card-value status-warning">Moderate</div>
+            <div class="card-small">
+            Continuous monitoring active<br>
+            Protection response engaged
+            </div>
         </div>
         """, unsafe_allow_html=True)
 
-# =========================================================
+    with e3:
+        st.markdown("""
+        <div class="card">
+            <div class="card-title">🤖 AUTOMATION</div>
+            <div class="card-value status-good">Active</div>
+            <div class="card-small">
+            Response: Redirect<br>
+            Manual intervention: Minimal
+            </div>
+        </div>
+        """, unsafe_allow_html=True)
+
+
+# ============================================================
 # SWARM ASSESSMENT
-# =========================================================
+# ============================================================
 
 elif page == "Swarm Assessment":
 
-    st.header("🔎 Swarm Assessment")
+    st.markdown("## 🔎 Swarm Assessment")
 
-    st.markdown(
-        '<div class="demo">Demo assessment interface. Replace simulated inputs with real early-warning/detection data when available.</div>',
-        unsafe_allow_html=True
+    st.info(
+        "This page demonstrates how local sensor information could "
+        "support swarm-risk assessment. Values are simulated."
     )
 
     col1, col2 = st.columns(2)
 
     with col1:
-        st.subheader("Swarm Inputs")
 
-        swarm_intensity = st.slider(
+        intensity = st.slider(
             "Swarm intensity",
             0,
             100,
-            65
+            72
         )
 
-        proximity = st.slider(
-            "Proximity to intake",
-            0,
-            100,
-            55
+        distance = st.slider(
+            "Distance to protected intake (demo)",
+            10,
+            1000,
+            320
         )
 
         confidence = st.slider(
             "Detection confidence",
             0,
             100,
-            80
+            91
         )
 
     with col2:
-        st.subheader("Assessment")
 
-        score = (
-            swarm_intensity * 0.4
-            + proximity * 0.4
-            + confidence * 0.2
+        direction = st.selectbox(
+            "Estimated movement direction",
+            [
+                "Toward intake",
+                "Parallel to intake",
+                "Away from intake"
+            ]
         )
 
-        if score < 30:
-            risk = "LOW"
-        elif score < 60:
-            risk = "MODERATE"
-        elif score < 80:
+        water_condition = st.selectbox(
+            "Local water condition",
+            [
+                "Normal",
+                "Changing",
+                "High flow variation"
+            ]
+        )
+
+        if intensity >= 70 and direction == "Toward intake":
             risk = "HIGH"
+            recommendation = "Redirect"
+        elif intensity >= 45:
+            risk = "MODERATE"
+            recommendation = "Adapt / Monitor"
         else:
-            risk = "CRITICAL"
+            risk = "LOW"
+            recommendation = "Monitor"
 
-        st.metric("Demo Risk Score", f"{score:.0f}/100")
-        st.metric("Intake Risk", risk)
+        st.markdown("### Assessment Result")
 
-    st.markdown("## Why this risk level?")
+        st.metric("Risk level", risk)
+        st.metric("Recommended response", recommendation)
 
-    st.info(
-        "The prototype combines swarm intensity, proximity to the intake, "
-        "and detection confidence to demonstrate an explainable risk-assessment workflow. "
-        "This is a demo rule-based system and is not a trained predictive model."
+    st.markdown("---")
+
+    st.markdown("### Decision Logic")
+
+    st.write(
+        "The prototype combines swarm intensity, estimated movement "
+        "direction and proximity to the protected intake to demonstrate "
+        "a response decision."
     )
 
-# =========================================================
+    st.warning(
+        "This is a transparent prototype rule set, not a trained "
+        "machine-learning model."
+    )
+
+
+# ============================================================
 # RESPONSE CONTROL
-# =========================================================
+# ============================================================
 
 elif page == "Response Control":
 
-    st.header("🔄 Response Control")
+    st.markdown("## 🔄 Response Control")
 
-    st.markdown(
-        '<div class="demo">Prototype response-control interface. Actions shown here are simulated and do not control real equipment.</div>',
-        unsafe_allow_html=True
+    st.info(
+        "Prototype control panel. These controls simulate the proposed "
+        "response logic and do not operate real equipment."
     )
 
-    st.subheader("Select Response Mode")
-
     response = st.radio(
-        "Response strategy",
+        "Select response mode",
         [
             "Guide",
             "Redirect",
             "Collect",
             "Release"
         ],
+        index=1,
         horizontal=True
     )
 
-    st.markdown("---")
-
-    if response == "Guide":
-        st.success(
-            "GUIDE selected — demonstrate controlled movement of the swarm toward a safer pathway."
+    if response == "Redirect":
+        explanation = (
+            "Adaptive flow is directed to guide the swarm away "
+            "from the protected intake zone."
         )
-
-    elif response == "Redirect":
-        st.warning(
-            "REDIRECT selected — demonstrate directing the swarm away from the intake area."
+    elif response == "Guide":
+        explanation = (
+            "Modules are positioned to influence swarm movement "
+            "toward a safer open-water direction."
         )
-
     elif response == "Collect":
-        st.warning(
-            "COLLECT selected — demonstrate controlled collection while minimizing harm to marine organisms."
+        explanation = (
+            "Collection is represented as an alternative response "
+            "when redirection is insufficient."
+        )
+    else:
+        explanation = (
+            "Release represents returning collected organisms "
+            "to a safer open-water area."
         )
 
-    elif response == "Release":
-        st.info(
-            "RELEASE selected — demonstrate safe release after controlled collection or handling."
-        )
+    st.success(f"Active response: {response}")
 
-    st.markdown("## Response Status")
+    st.markdown(f"### Response explanation\n{explanation}")
+
+    st.markdown("---")
 
     c1, c2, c3 = st.columns(3)
 
     with c1:
-        st.metric("Current Mode", response)
+        st.metric("Automation", "Active")
 
     with c2:
-        st.metric("Manual Intervention", "Minimal")
+        st.metric("Manual intervention", "Minimal")
 
     with c3:
-        st.metric("System Status", "Active")
+        st.metric("System state", "Monitoring")
 
-    st.markdown("## Response Sequence")
+    st.markdown("---")
 
-    sequence = pd.DataFrame({
-        "Stage": [
-            "Early Warning",
-            "Assessment",
-            "Response Activated",
-            "Outcome Monitoring"
-        ],
-        "Status": [
-            "Complete",
-            "Complete",
-            "Active",
-            "Monitoring"
-        ]
-    })
+    st.markdown("### Closed-Loop Response")
 
-    st.dataframe(
-        sequence,
-        use_container_width=True,
-        hide_index=True
-    )
+    steps = [
+        ("01", "Observe", "Receive updated swarm position"),
+        ("02", "Compare", "Check exposure against protected zone"),
+        ("03", "Adjust", "Modify response direction"),
+        ("04", "Verify", "Observe whether swarm moves away")
+    ]
 
-# =========================================================
+    for number, title, description in steps:
+        st.markdown(
+            f"""
+            <div class="card" style="margin-bottom:10px;">
+                <b>{number} — {title}</b><br>
+                <span style="color:#8fb8c3;">{description}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+
+# ============================================================
 # MONITORING DATA
-# =========================================================
+# ============================================================
 
 elif page == "Monitoring Data":
 
-    st.header("📊 Monitoring Data")
+    st.markdown("## 📊 Monitoring Data")
 
-    st.markdown(
-        '<div class="demo">SIMULATED DATA — Replace with real sensor, detection, or early-warning data when available.</div>',
-        unsafe_allow_html=True
+    st.info(
+        "All values below are simulated demonstration data."
     )
 
-    data = pd.DataFrame({
-        "Time": time_points,
-        "Swarm Activity": jellyfish_activity,
-        "Intake Risk": intake_risk,
-        "Response": [
-            "Monitoring",
-            "Monitoring",
-            "Assessment",
-            "Assessment",
-            "Redirect",
-            "Redirect",
-            "Redirect",
-            "Monitoring"
-        ]
-    })
-
     st.dataframe(
-        data,
+        monitoring_df,
         use_container_width=True,
         hide_index=True
     )
 
-    st.markdown("## Activity Trend")
+    st.markdown("### Activity Trend")
 
     st.line_chart(
-        data.set_index("Time")[["Swarm Activity", "Intake Risk"]]
+        monitoring_df.set_index("Time")["Jellyfish Activity"],
+        height=280
     )
 
-# =========================================================
+    st.markdown("### Intake Risk Trend")
+
+    st.line_chart(
+        monitoring_df.set_index("Time")["Intake Risk"],
+        height=280
+    )
+
+    st.markdown("### Prototype Sensor Inputs")
+
+    sensor_df = pd.DataFrame({
+        "Input": [
+            "Swarm intensity",
+            "Estimated direction",
+            "Distance to intake",
+            "Detection confidence",
+            "Water condition"
+        ],
+        "Status": [
+            "Elevated",
+            "Toward intake",
+            "320 m",
+            "91%",
+            "Normal"
+        ]
+    })
+
+    st.dataframe(
+        sensor_df,
+        use_container_width=True,
+        hide_index=True
+    )
+
+
+# ============================================================
 # ALERTS
-# =========================================================
+# ============================================================
 
 elif page == "Alerts":
 
-    st.header("🚨 Alerts")
+    st.markdown("## 🚨 Alerts & Decision Log")
 
-    st.markdown(
-        '<div class="demo">Demo alerts only. These alerts do not represent live ENEC operational data.</div>',
-        unsafe_allow_html=True
+    alerts = [
+        ("13:00", "WARNING", "Elevated swarm activity detected"),
+        ("13:05", "RISK", "Swarm movement trending toward protected intake"),
+        ("13:07", "ACTION", "Redirect response activated"),
+        ("13:12", "MONITOR", "Swarm movement being reassessed"),
+        ("13:18", "VERIFY", "Response effectiveness under observation")
+    ]
+
+    for timestamp, level, message in alerts:
+
+        if level == "WARNING":
+            icon = "⚠️"
+        elif level == "RISK":
+            icon = "🔴"
+        elif level == "ACTION":
+            icon = "🔄"
+        else:
+            icon = "🟢"
+
+        st.markdown(
+            f"""
+            <div class="card" style="margin-bottom:10px;">
+                <b>{icon} {timestamp} — {level}</b><br>
+                <span style="color:#9ab7bf;">{message}</span>
+            </div>
+            """,
+            unsafe_allow_html=True
+        )
+
+    st.markdown("---")
+
+    st.markdown("### Current Decision")
+
+    st.success(
+        "Redirect response remains active while the system "
+        "continues to monitor swarm movement."
     )
 
-    st.markdown("""
-    <div class="status-warning">
-        ⚠️ MODERATE — Jellyfish swarm activity increasing near monitored intake area.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("")
-
-    st.markdown("""
-    <div class="status-good">
-        🟢 RESPONSE ACTIVE — Redirect response selected for demonstration.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.write("")
-
-    st.markdown("""
-    <div class="status-good">
-        🟢 MONITORING — System is tracking response outcome.
-    </div>
-    """, unsafe_allow_html=True)
-
-    st.markdown("## Recommended Operational Logic")
-
-    st.info(
-        "When an early warning is received, the system should assess swarm conditions, "
-        "estimate potential intake impact, select an appropriate response, "
-        "and continuously monitor whether the response is effective."
+    st.caption(
+        "Prototype only — no real operational equipment is connected."
     )
 
-# ---------------------------------------------------------
+
+# ============================================================
 # FOOTER
-# ---------------------------------------------------------
+# ============================================================
 
 st.markdown(
-    '<div class="footer">Fanar Aqua Guard | AI-assisted jellyfish swarm management prototype | Demo system</div>',
+    """
+    <div class="footer">
+        Fanar Aqua Guard | ATP 2026 | AI-assisted jellyfish swarm management prototype<br>
+        Demonstration interface — simulated data only
+    </div>
+    """,
     unsafe_allow_html=True
 )
-
