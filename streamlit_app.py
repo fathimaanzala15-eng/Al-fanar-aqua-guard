@@ -293,84 +293,232 @@ if page == "Dashboard":
         """, unsafe_allow_html=True)
 
 
-    # --------------------------------------------------------
-    # MAIN VISUAL
-    # --------------------------------------------------------
+# --------------------------------------------------------
+# MAIN VISUAL — FANAR PHYSICAL RESPONSE
+# --------------------------------------------------------
 
-    st.markdown(
-        '<div class="section-title">Live Swarm-to-Intake Situation</div>',
-        unsafe_allow_html=True
-    )
+st.markdown(
+    '<div class="section-title">Live FANAR Response Zone</div>',
+    unsafe_allow_html=True
+)
 
-    left, mid, right = st.columns([1, 0.25, 1])
+st.caption(
+    "Simulated view of the proposed autonomous response around the protected seawater intake."
+)
 
-    with left:
-        st.markdown("""
-        <div class="swarm-box">
-            <div class="big-icon">🪼 🪼 🪼</div>
-            <h3>Incoming Swarm</h3>
-            <p>Elevated activity detected</p>
-            <hr>
-            <div class="metric-label">Movement direction</div>
-            <div class="metric-value">→ Intake zone</div>
-            <br>
-            <div class="metric-label">Swarm intensity</div>
-            <div class="metric-value">High</div>
-        </div>
-        """, unsafe_allow_html=True)
+st.markdown("""
+<div style="
+    background: linear-gradient(180deg, #08232d 0%, #061820 100%);
+    border: 1px solid #245564;
+    border-radius: 18px;
+    padding: 28px;
+    min-height: 390px;
+">
 
-    with mid:
-        st.markdown(
-            '<div class="arrow">→</div>',
-            unsafe_allow_html=True
-        )
+<div style="
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+    margin-bottom:25px;
+">
 
-    with right:
-        st.markdown("""
-        <div class="intake-box">
-            <div class="big-icon">🌊</div>
-            <h3>Seawater Intake</h3>
-            <p>Protected zone</p>
-            <hr>
-            <div class="metric-label">Current exposure</div>
-            <div class="metric-value">Moderate</div>
-            <br>
-            <div class="metric-label">Protection state</div>
-            <div class="metric-value status-good">Active</div>
-        </div>
-        """, unsafe_allow_html=True)
+<div>
+    <div style="font-size:13px;color:#7faab5;">EVENT STATUS</div>
+    <div style="font-size:25px;font-weight:800;">🟢 RESPONSE ACTIVE</div>
+</div>
+
+<div style="text-align:right;">
+    <div style="font-size:13px;color:#7faab5;">CURRENT MODE</div>
+    <div style="font-size:25px;font-weight:800;">↗️ REDIRECT</div>
+</div>
+
+</div>
+
+<div style="
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    gap:18px;
+">
+
+<!-- SWARM -->
+
+<div style="
+    background:#281b28;
+    border:2px solid #714d6c;
+    border-radius:16px;
+    padding:22px;
+    width:25%;
+    text-align:center;
+">
+
+<div style="font-size:42px;">🪼🪼🪼</div>
+
+<div style="font-size:20px;font-weight:800;">
+INCOMING SWARM
+</div>
+
+<div style="color:#a9c0c6;font-size:13px;margin-top:7px;">
+Movement: → Intake
+</div>
+
+<div style="color:#ffd166;font-size:13px;margin-top:5px;">
+Intensity: HIGH
+</div>
+
+</div>
 
 
-    st.markdown("<br>", unsafe_allow_html=True)
+<!-- FLOW -->
 
-    r1, r2, r3 = st.columns(3)
+<div style="
+    width:12%;
+    text-align:center;
+">
 
-    with r1:
-        st.markdown("""
-        <div class="response-box">
-            <div class="big-icon">🧠</div>
-            <h3>Analyze</h3>
-            <p>Movement + local conditions assessed</p>
-        </div>
-        """, unsafe_allow_html=True)
+<div style="
+    font-size:32px;
+    color:#6dc7d8;
+">
+→ → →
+</div>
 
-    with r2:
-        st.markdown("""
-        <div class="response-box">
-            <div class="big-icon">🔄</div>
-            <h3>Adapt</h3>
-            <p>Response direction adjusted</p>
-        </div>
-        """, unsafe_allow_html=True)
+<div style="
+    font-size:11px;
+    color:#83aeb8;
+">
+PREDICTED PATH
+</div>
 
-    with r3:
-        st.markdown("""
-        <div class="response-box">
-            <div class="big-icon">↗️</div>
-            <h3>Redirect</h3>
-            <p>Swarm guided away from intake</p>
-        </div>
-        """, unsafe_allow_html=True)
+</div>
+
+
+<!-- FANAR MODULES -->
+
+<div style="
+    background:#102b35;
+    border:2px solid #367889;
+    border-radius:16px;
+    padding:22px;
+    width:27%;
+    text-align:center;
+">
+
+<div style="font-size:38px;">
+🟦 🟦 🟦
+</div>
+
+<div style="font-size:20px;font-weight:800;">
+FANAR MODULES
+</div>
+
+<div style="color:#a9c0c6;font-size:13px;margin-top:7px;">
+Adaptive positioning
+</div>
+
+<div style="color:#67e8a5;font-size:13px;margin-top:5px;">
+Controlled redirection active
+</div>
+
+</div>
+
+
+<!-- REDIRECTION -->
+
+<div style="
+    width:12%;
+    text-align:center;
+">
+
+<div style="
+    font-size:32px;
+    color:#67e8a5;
+">
+↗ ↗ ↗
+</div>
+
+<div style="
+    font-size:11px;
+    color:#83aeb8;
+">
+SAFE PATH
+</div>
+
+</div>
+
+
+<!-- INTAKE -->
+
+<div style="
+    background:#0b2731;
+    border:2px solid #347284;
+    border-radius:16px;
+    padding:22px;
+    width:24%;
+    text-align:center;
+">
+
+<div style="font-size:42px;">
+🌊
+</div>
+
+<div style="font-size:20px;font-weight:800;">
+SEAWATER INTAKE
+</div>
+
+<div style="color:#a9c0c6;font-size:13px;margin-top:7px;">
+Protected zone
+</div>
+
+<div style="color:#67e8a5;font-size:13px;margin-top:5px;">
+Exposure: REDUCED
+</div>
+
+</div>
+
+</div>
+
+<div style="
+    margin-top:25px;
+    padding-top:18px;
+    border-top:1px solid #21414b;
+    display:flex;
+    justify-content:space-around;
+    text-align:center;
+">
+
+<div>
+    <div style="color:#7faab5;font-size:12px;">
+    MODULE STATUS
+    </div>
+    <b>3 / 3 ACTIVE</b>
+</div>
+
+<div>
+    <div style="color:#7faab5;font-size:12px;">
+    AUTOMATION
+    </div>
+    <b style="color:#67e8a5;">ACTIVE</b>
+</div>
+
+<div>
+    <div style="color:#7faab5;font-size:12px;">
+    MANUAL INTERVENTION
+    </div>
+    <b>MINIMAL</b>
+</div>
+
+<div>
+    <div style="color:#7faab5;font-size:12px;">
+    RESPONSE STATE
+    </div>
+    <b style="color:#67e8a5;">MONITORING</b>
+</div>
+
+</div>
+
+</div>
+""", unsafe_allow_html=True)
 
 
     # --------------------------------------------------------
