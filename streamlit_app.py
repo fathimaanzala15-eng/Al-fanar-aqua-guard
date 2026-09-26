@@ -580,29 +580,4 @@ st.markdown(
     '<div class="footer">Fanar Aqua Guard | AI-assisted jellyfish swarm management prototype | Demo system</div>',
     unsafe_allow_html=True
 )
-```
-
-### After pasting
-
-In GitHub:
-
-1. Click **Commit changes**
-2. Keep the default commit message.
-3. Click **Commit changes**.
-4. Wait about **30–60 seconds**.
-5. Open your Streamlit app again:
-   **`fanar-aqua-guard.streamlit.app`**
-6. Refresh.
-
-You should now have the complete first version with:
-
-**Dashboard → Swarm Assessment → Response Control → Monitoring Data → Alerts**
-
-### ⚠️ One important thing
-
-This is **Version 1 only**. I deliberately did **not** put fake ENEC sensor data, fake AI accuracy, or pretend that the buttons control real machinery.
-
-The next stage is where we make it look much more like a **serious ATP prototype**: we can add the actual jellyfish-response concept, an animated swarm/intake visualization, a more convincing control interface, and eventually connect the prototype logic to whatever data/model your team is actually using.
-
-And yes — **this version doesn't depend on Replit/Base44 credits.**
 
