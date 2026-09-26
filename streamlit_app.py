@@ -8,7 +8,7 @@ import time
 # =========================================================
 st.set_page_config(
     page_title="Fanar Aqua Guard",
-    page_icon="🌊",
+    page_icon="🚨",
     layout="wide",
     initial_sidebar_state="expanded"
 )
@@ -415,124 +415,44 @@ if page == "Dashboard":
         </div>
         """, unsafe_allow_html=True)
 
-    # =====================================================
-    # FANAR VISUAL
-    # =====================================================
-    st.markdown("""
-    <div class="fanar-visual">
+   # =====================================================
+# FANAR VISUAL
+# =====================================================
+st.markdown("## 🪼 FANAR Autonomous Response")
 
-        <div class="visual-title">
-            🪼 FANAR Autonomous Response Visualization
-        </div>
+st.caption("Detect → Analyze → Assess → Respond → Verify")
 
-        <div class="visual-subtitle">
-            Detect → Analyze → Assess → Respond → Verify
-        </div>
+v1, v2, v3, v4, v5 = st.columns(5)
 
-        <div class="visual-row">
+with v1:
+    st.info("🪼\n\n**Incoming Swarm**\n\nHigh activity detected")
 
-            <div class="visual-box">
-                <div class="visual-icon">🪼</div>
-                <div class="visual-label">Incoming Swarm</div>
-                <div class="visual-info">
-                    High activity detected
-                </div>
-            </div>
+with v2:
+    st.success("📡\n\n**Detection**\n\nCamera + sonar + sensors")
 
-            <div class="arrow">→</div>
+with v3:
+    st.warning("🧠\n\n**Risk Engine**\n\nIntake risk assessment")
 
-            <div class="visual-box">
-                <div class="visual-icon">📡</div>
-                <div class="visual-label">Detection</div>
-                <div class="visual-info">
-                    Camera + sonar + sensors
-                </div>
-            </div>
+with v4:
+    st.info("⚙️\n\n**FANAR Modules**\n\nAdaptive response")
 
-            <div class="arrow">→</div>
+with v5:
+    st.success("🌊\n\n**Protected Intake**\n\nReduced swarm exposure")
 
-            <div class="visual-box">
-                <div class="visual-icon">🧠</div>
-                <div class="visual-label">Risk Engine</div>
-                <div class="visual-info">
-                    Intake risk assessment
-                </div>
-            </div>
+st.markdown("### FANAR Response Modules")
 
-            <div class="arrow">→</div>
+m1, m2, m3 = st.columns(3)
 
-            <div class="visual-box">
-                <div class="visual-icon">⚙️</div>
-                <div class="visual-label">FANAR Modules</div>
-                <div class="visual-info">
-                    Adaptive response
-                </div>
-            </div>
+with m1:
+    st.success("🟢 F1 — ACTIVE")
 
-            <div class="arrow">→</div>
+with m2:
+    st.success("🟢 F2 — ACTIVE")
 
-            <div class="visual-box">
-                <div class="visual-icon">🌊</div>
-                <div class="visual-label">Protected Intake</div>
-                <div class="visual-info">
-                    Reduced swarm exposure
-                </div>
-            </div>
+with m3:
+    st.success("🟢 F3 — ACTIVE")
 
-        </div>
-
-        <div class="module-grid">
-
-            <div class="module">
-                <div class="module-name">F1</div>
-                <div class="module-status">● ACTIVE</div>
-            </div>
-
-            <div class="module">
-                <div class="module-name">F2</div>
-                <div class="module-status">● ACTIVE</div>
-            </div>
-
-            <div class="module">
-                <div class="module-name">F3</div>
-                <div class="module-status">● ACTIVE</div>
-            </div>
-
-        </div>
-
-    </div>
-    """, unsafe_allow_html=True)
-
-    # =====================================================
-    # SIMULATION
-    # =====================================================
-    st.markdown(
-        '<div class="section-title">Autonomous Response Simulation</div>',
-        unsafe_allow_html=True
-    )
-
-    if st.button("▶ Run FANAR Simulation", use_container_width=True):
-
-        progress = st.progress(0)
-
-        steps = [
-            ("Detecting jellyfish swarm...", 20),
-            ("Analyzing swarm movement...", 40),
-            ("Assessing intake risk...", 60),
-            ("Activating adaptive response...", 80),
-            ("Verifying response outcome...", 100)
-        ]
-
-        for message, value in steps:
-            st.session_state.simulation_step = message
-            st.info(message)
-            progress.progress(value)
-            time.sleep(0.6)
-
-        st.success(
-            "FANAR response verified — swarm exposure to the protected intake "
-            "has been reduced in the demonstration scenario."
-        )
+st.divider()
 
     # =====================================================
     # CURRENT DECISION
