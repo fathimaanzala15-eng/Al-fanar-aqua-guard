@@ -1,10 +1,10 @@
 import streamlit as st
 import pandas as pd
-import numpy as np
+import time
 
-# ---------------------------------------------------------
+# =========================================================
 # PAGE CONFIG
-# ---------------------------------------------------------
+# =========================================================
 st.set_page_config(
     page_title="Fanar Aqua Guard",
     page_icon="🪼",
@@ -12,9 +12,21 @@ st.set_page_config(
     initial_sidebar_state="expanded"
 )
 
-# ---------------------------------------------------------
+# =========================================================
+# SESSION STATE
+# =========================================================
+if "simulation_running" not in st.session_state:
+    st.session_state.simulation_running = False
+
+if "simulation_complete" not in st.session_state:
+    st.session_state.simulation_complete = False
+
+if "selected_response" not in st.session_state:
+    st.session_state.selected_response = "Redirect"
+
+# =========================================================
 # CUSTOM CSS
-# ---------------------------------------------------------
+# =========================================================
 st.markdown("""
 <style>
 
@@ -105,6 +117,20 @@ p, label {
 .alert-box {
     background: #321b1b;
     border: 1px solid #7a3838;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.warning-box {
+    background: #332b17;
+    border: 1px solid #75602b;
+    border-radius: 12px;
+    padding: 15px;
+}
+
+.success-box {
+    background: #102c24;
+    border: 1px solid #28634f;
     border-radius: 12px;
     padding: 15px;
 }
@@ -247,13 +273,49 @@ p, label {
     font-size: 12px;
 }
 
+.event-card {
+    background: #081d29;
+    border: 1px solid #1a4d63;
+    border-radius: 12px;
+    padding: 16px;
+    min-height: 110px;
+}
+
+.event-label {
+    color: #7faabd;
+    font-size: 12px;
+    margin-bottom: 7px;
+}
+
+.event-value {
+    color: #e9faff;
+    font-size: 20px;
+    font-weight: 700;
+}
+
+.system-row {
+    background: #081d29;
+    border: 1px solid #17465d;
+    border-radius: 8px;
+    padding: 12px 15px;
+    margin-bottom: 7px;
+}
+
+.system-name {
+    color: #dceff6;
+}
+
+.system-active {
+    color: #5fe0a8;
+    font-weight: 700;
+}
+
 </style>
 """, unsafe_allow_html=True)
 
-
-# ---------------------------------------------------------
+# =========================================================
 # SIDEBAR
-# ---------------------------------------------------------
+# =========================================================
 st.sidebar.title("🪼 Fanar Aqua Guard")
 st.sidebar.caption("ATP 2026 • Autonomous Jellyfish Swarm Management")
 
@@ -269,18 +331,16 @@ page = st.sidebar.radio(
 )
 
 st.sidebar.markdown("---")
+
 st.sidebar.info(
     "Prototype demonstration only.\n\n"
     "All readings shown in this dashboard are simulated."
 )
 
-
-# ---------------------------------------------------------
+# =========================================================
 # HEADER
-# ---------------------------------------------------------
-st.markdown(
-    "# 🪼 Fanar Aqua Guard"
-)
+# =========================================================
+st.markdown("# 🪼 Fanar Aqua Guard")
 
 st.markdown(
     "### Autonomous Jellyfish Swarm Management & Seawater Intake Protection"
@@ -288,8 +348,8 @@ st.markdown(
 
 st.markdown(
     '<div class="info-box">'
-    '<b>Prototype Mode:</b> This dashboard demonstrates the FANAR decision-support '
-    'and autonomous response concept using simulated sensor data.'
+    '<b>Prototype Mode:</b> This dashboard demonstrates the FANAR '
+    'decision-support and autonomous response concept using simulated sensor data.'
     '</div>',
     unsafe_allow_html=True
 )
@@ -303,12 +363,30 @@ st.markdown("")
 if page == "Dashboard":
 
     # -----------------------------------------------------
+    # CURRENT VALUES
+    # -----------------------------------------------------
+    swarm_intensity = 72
+    distance = 320
+    confidence = 91
+    direction = "Toward intake"
+
+    if swarm_intensity >= 70 and direction == "Toward intake":
+        risk = "HIGH"
+        response = "Redirect"
+    elif swarm_intensity >= 45:
+        risk = "MODERATE"
+        response = "Adapt"
+    else:
+        risk = "LOW"
+        response = "Monitor"
+
+    # -----------------------------------------------------
     # KPI CARDS
     # -----------------------------------------------------
     c1, c2, c3, c4 = st.columns(4)
 
     with c1:
-        st.markdown("""
+        st.markdown(f"""
         <div class="kpi">
             <div class="kpi-title">SWARM STATUS</div>
             <div class="kpi-value">Detected</div>
@@ -317,19 +395,23 @@ if page == "Dashboard":
         """, unsafe_allow_html=True)
 
     with c2:
-        st.markdown("""
+        risk_class = "status-high" if risk == "HIGH" else (
+            "status-medium" if risk == "MODERATE" else "status-low"
+        )
+
+        st.markdown(f"""
         <div class="kpi">
             <div class="kpi-title">INTAKE RISK</div>
-            <div class="kpi-value">Moderate</div>
+            <div class="kpi-value {risk_class}">{risk}</div>
             <div class="kpi-sub">Dynamic assessment</div>
         </div>
         """, unsafe_allow_html=True)
 
     with c3:
-        st.markdown("""
+        st.markdown(f"""
         <div class="kpi">
             <div class="kpi-title">CURRENT RESPONSE</div>
-            <div class="kpi-value">Redirect</div>
+            <div class="kpi-value">{response}</div>
             <div class="kpi-sub">Adaptive response</div>
         </div>
         """, unsafe_allow_html=True)
@@ -346,7 +428,7 @@ if page == "Dashboard":
     st.markdown("")
 
     # -----------------------------------------------------
-    # FANAR PHYSICAL RESPONSE VISUALIZATION
+    # MAIN FANAR VISUAL
     # -----------------------------------------------------
     st.markdown("""
     <div class="fanar-visual">
@@ -362,7 +444,9 @@ if page == "Dashboard":
         <div class="visual-row">
 
             <div class="visual-zone">
-                <div class="zone-label">INCOMING JELLYFISH SWARM</div>
+                <div class="zone-label">
+                    INCOMING JELLYFISH SWARM
+                </div>
 
                 <div class="jellyfish">
                     🪼 🪼 🪼
@@ -435,7 +519,70 @@ if page == "Dashboard":
     """, unsafe_allow_html=True)
 
     # -----------------------------------------------------
-    # RESPONSE CARDS
+    # RUN SIMULATION
+    # -----------------------------------------------------
+    st.markdown(
+        '<div class="section-title">Autonomous Demonstration</div>',
+        unsafe_allow_html=True
+    )
+
+    st.write(
+        "Run a simulated high-risk jellyfish event and observe how FANAR "
+        "moves through its autonomous decision cycle."
+    )
+
+    if st.button(
+        "▶ Run FANAR Simulation",
+        use_container_width=True,
+        type="primary"
+    ):
+
+        progress = st.progress(0)
+
+        status_box = st.empty()
+
+        steps = [
+            ("👁️ DETECT", "Jellyfish swarm detected by monitoring system.", 20),
+            ("🧠 ANALYZE", "Swarm intensity and movement direction assessed.", 40),
+            ("⚠️ ASSESS", "HIGH intake risk identified.", 60),
+            ("⚙️ RESPOND", "Redirect response activated. FANAR modules engaged.", 80),
+            ("🔄 VERIFY", "Swarm movement reassessed. Continue monitoring.", 100)
+        ]
+
+        for title, message, value in steps:
+            status_box.markdown(
+                f"""
+                <div class="info-box">
+                    <b>{title}</b><br>
+                    {message}
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+            progress.progress(value)
+            time.sleep(0.7)
+
+        st.session_state.simulation_complete = True
+
+        st.success(
+            "FANAR simulation complete — response verified and monitoring continues."
+        )
+
+    if st.session_state.simulation_complete:
+
+        st.markdown("""
+        <div class="success-box">
+        <b>🟢 FANAR RESPONSE VERIFIED</b><br><br>
+        The simulated swarm response has been completed.
+        FANAR remains in continuous monitoring mode.
+        </div>
+        """, unsafe_allow_html=True)
+
+    st.markdown("")
+
+    # -----------------------------------------------------
+    # CURRENT FANAR DECISION
     # -----------------------------------------------------
     st.markdown(
         '<div class="section-title">Current FANAR Decision</div>',
@@ -449,7 +596,7 @@ if page == "Dashboard":
         <div class="card">
             <h3>🔎 Analyze</h3>
             <p>
-            The system evaluates swarm intensity, distance to the intake,
+            FANAR evaluates swarm intensity, distance to the intake,
             movement direction and detection confidence.
             </p>
         </div>
@@ -460,7 +607,7 @@ if page == "Dashboard":
         <div class="card">
             <h3>⚙️ Adapt</h3>
             <p>
-            FANAR selects a response based on the assessed intake risk
+            FANAR selects a response based on assessed intake risk
             and current swarm behaviour.
             </p>
         </div>
@@ -471,9 +618,108 @@ if page == "Dashboard":
         <div class="card">
             <h3>↗️ Redirect</h3>
             <p>
-            Controlled flow is used to guide the swarm away from the
-            protected intake zone.
+            Controlled flow is used to guide the swarm away from
+            the protected intake zone.
             </p>
+        </div>
+        """, unsafe_allow_html=True)
+
+    # -----------------------------------------------------
+    # SYSTEM STATUS
+    # -----------------------------------------------------
+    st.markdown(
+        '<div class="section-title">System Status</div>',
+        unsafe_allow_html=True
+    )
+
+    systems = [
+        ("Early Warning", "Connected"),
+        ("Camera", "Active"),
+        ("Sonar", "Active"),
+        ("Water Sensors", "Active"),
+        ("Risk Engine", "Active"),
+        ("FANAR F1", "Active"),
+        ("FANAR F2", "Active"),
+        ("FANAR F3", "Active"),
+        ("Continuous Monitoring", "Active")
+    ]
+
+    left, right = st.columns(2)
+
+    for index, (name, status) in enumerate(systems):
+
+        target = left if index % 2 == 0 else right
+
+        with target:
+            st.markdown(
+                f"""
+                <div class="system-row">
+                    <span class="system-name">{name}</span>
+                    <span style="float:right" class="system-active">
+                        🟢 {status}
+                    </span>
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
+
+    # -----------------------------------------------------
+    # ACTIVE EVENT
+    # -----------------------------------------------------
+    st.markdown(
+        '<div class="section-title">Active Event</div>',
+        unsafe_allow_html=True
+    )
+
+    e1, e2, e3 = st.columns(3)
+
+    with e1:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">EVENT ID</div>
+            <div class="event-value">FANAR-2026-001</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with e2:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">SWARM</div>
+            <div class="event-value">Detected</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with e3:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">MOVEMENT</div>
+            <div class="event-value">Toward intake</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    e4, e5, e6 = st.columns(3)
+
+    with e4:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">DISTANCE</div>
+            <div class="event-value">320 m</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with e5:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">RISK</div>
+            <div class="event-value status-high">HIGH</div>
+        </div>
+        """, unsafe_allow_html=True)
+
+    with e6:
+        st.markdown("""
+        <div class="event-card">
+            <div class="event-label">RESPONSE</div>
+            <div class="event-value">REDIRECT</div>
         </div>
         """, unsafe_allow_html=True)
 
@@ -515,7 +761,7 @@ if page == "Dashboard":
             <div class="flow-icon">⚙️</div>
             <div class="flow-title">Adapt</div>
             <div class="flow-text">
-                The response mode and intensity are selected.
+                Response mode and intensity are selected.
             </div>
         </div>
         """, unsafe_allow_html=True)
@@ -526,22 +772,20 @@ if page == "Dashboard":
             <div class="flow-icon">🔄</div>
             <div class="flow-title">Verify</div>
             <div class="flow-text">
-                The outcome is monitored and the response is adjusted.
+                Outcome is monitored and the response is adjusted.
             </div>
         </div>
         """, unsafe_allow_html=True)
 
-    st.markdown("")
-
     # -----------------------------------------------------
-    # SIMULATED ACTIVITY DATA
+    # RESPONSE EFFECT CHART
     # -----------------------------------------------------
     st.markdown(
-        '<div class="section-title">Live Demonstration Data</div>',
+        '<div class="section-title">Response Effect</div>',
         unsafe_allow_html=True
     )
 
-    chart_data = pd.DataFrame({
+    response_data = pd.DataFrame({
         "Time": [
             "14:00",
             "14:05",
@@ -552,7 +796,7 @@ if page == "Dashboard":
             "14:30",
             "14:35"
         ],
-        "Jellyfish Activity": [
+        "Swarm Activity": [
             35, 42, 50, 62, 72, 68, 55, 48
         ],
         "Intake Risk": [
@@ -561,31 +805,13 @@ if page == "Dashboard":
     })
 
     st.line_chart(
-        chart_data.set_index("Time")
+        response_data.set_index("Time")
     )
 
     st.caption(
-        "Simulated demonstration values — not live sensor readings."
+        "Simulated demonstration: risk increases as the swarm approaches, "
+        "then decreases following the simulated redirect response."
     )
-
-    # -----------------------------------------------------
-    # CURRENT EVENT
-    # -----------------------------------------------------
-    st.markdown(
-        '<div class="section-title">Current Event</div>',
-        unsafe_allow_html=True
-    )
-
-    e1, e2, e3 = st.columns(3)
-
-    with e1:
-        st.metric("Swarm Intensity", "72 / 100")
-
-    with e2:
-        st.metric("Distance to Intake", "320 m")
-
-    with e3:
-        st.metric("Detection Confidence", "91%")
 
 
 # =========================================================
@@ -596,7 +822,7 @@ elif page == "Swarm Assessment":
     st.header("🔎 Swarm Assessment")
 
     st.write(
-        "Adjust the simulated sensor inputs to see how the FANAR "
+        "Adjust the simulated sensor inputs to observe how the FANAR "
         "decision logic responds."
     )
 
@@ -665,6 +891,7 @@ elif page == "Swarm Assessment":
     a1, a2, a3 = st.columns(3)
 
     with a1:
+
         if risk == "HIGH":
             css = "status-high"
         elif risk == "MODERATE":
@@ -742,6 +969,8 @@ elif page == "Response Control":
         horizontal=True
     )
 
+    st.session_state.selected_response = response_mode
+
     descriptions = {
         "Guide":
             "Use controlled flow to influence swarm movement away from the protected zone.",
@@ -756,11 +985,27 @@ elif page == "Response Control":
             "Reduce intervention and allow the system to return toward normal monitoring."
     }
 
+    reasons = {
+        "Guide":
+            "Used when the swarm can be influenced without requiring a stronger intervention.",
+
+        "Redirect":
+            "Selected when swarm movement creates an elevated risk to the protected intake.",
+
+        "Collect":
+            "Considered for concentrated aggregations requiring localized management.",
+
+        "Release":
+            "Used when intake risk has reduced and active intervention is no longer required."
+    }
+
     st.markdown(
         f"""
         <div class="card">
             <h2>{response_mode}</h2>
             <p>{descriptions[response_mode]}</p>
+            <hr>
+            <p><b>Decision rationale:</b> {reasons[response_mode]}</p>
         </div>
         """,
         unsafe_allow_html=True
@@ -769,22 +1014,35 @@ elif page == "Response Control":
     c1, c2, c3 = st.columns(3)
 
     with c1:
-        st.metric(
-            "Automation",
-            "Active"
-        )
+        st.metric("Automation", "Active")
 
     with c2:
-        st.metric(
-            "Manual Intervention",
-            "Minimal"
-        )
+        st.metric("Manual Intervention", "Minimal")
 
     with c3:
-        st.metric(
-            "System State",
-            "Monitoring"
-        )
+        st.metric("System State", "Monitoring")
+
+    st.markdown("---")
+
+    st.subheader("FANAR Module Status")
+
+    m1, m2, m3 = st.columns(3)
+
+    for col, module in zip(
+        [m1, m2, m3],
+        ["FANAR F1", "FANAR F2", "FANAR F3"]
+    ):
+        with col:
+            st.markdown(
+                f"""
+                <div class="success-box">
+                    <b>{module}</b><br><br>
+                    🟢 Active<br>
+                    Controlled response available
+                </div>
+                """,
+                unsafe_allow_html=True
+            )
 
     st.markdown("---")
 
@@ -955,37 +1213,62 @@ elif page == "Alerts":
 
     st.markdown("""
     <div class="alert-box">
-        <b>⚠️ Demonstration Alert</b><br><br>
-        Elevated jellyfish activity detected within the monitored
-        intake-risk zone. FANAR recommends a Redirect response.
+        <b>🔴 HIGH RISK — Active Event</b><br><br>
+        Elevated jellyfish activity has been detected within the
+        monitored intake-risk zone. FANAR recommends a Redirect response.
     </div>
     """, unsafe_allow_html=True)
 
     st.markdown("")
 
+    st.subheader("Current Alert")
+
+    alert1, alert2, alert3 = st.columns(3)
+
+    with alert1:
+        st.metric("Swarm Intensity", "72 / 100")
+
+    with alert2:
+        st.metric("Distance", "320 m")
+
+    with alert3:
+        st.metric("Detection Confidence", "91%")
+
+    st.markdown("---")
+
+    st.subheader("Decision Log")
+
     decision_log = pd.DataFrame({
         "Time": [
             "14:20",
             "14:21",
+            "14:22",
             "14:23",
-            "14:25"
+            "14:25",
+            "14:30"
         ],
         "Event": [
-            "Swarm intensity increased",
-            "Intake risk assessed",
+            "Swarm detected",
+            "Risk assessed",
             "Response selected",
-            "Response verified"
+            "FANAR modules activated",
+            "Swarm movement reassessed",
+            "Risk reduced"
         ],
         "System Action": [
             "Continue monitoring",
             "Risk classified as HIGH",
-            "Redirect activated",
+            "Redirect selected",
+            "F1 / F2 / F3 active",
+            "Verify response",
             "Continue adaptive monitoring"
         ],
         "Status": [
             "Complete",
             "Complete",
+            "Complete",
             "Active",
+            "Monitoring",
             "Monitoring"
         ]
     })
@@ -1000,15 +1283,26 @@ elif page == "Alerts":
 
     st.subheader("Autonomous Decision Chain")
 
-    st.write(
-        "Early Warning Received → Assess Swarm → Determine Intake Risk "
-        "→ Activate Response → Monitor Outcome"
+    st.markdown(
+        """
+        **Early Warning Received**
+        ↓  
+        **Assess Swarm**
+        ↓  
+        **Determine Intake Risk**
+        ↓  
+        **Activate Response**
+        ↓  
+        **Monitor Outcome**
+        ↓  
+        **Adapt if Required**
+        """
     )
 
 
-# ---------------------------------------------------------
+# =========================================================
 # FOOTER
-# ---------------------------------------------------------
+# =========================================================
 st.markdown("---")
 
 st.caption(
